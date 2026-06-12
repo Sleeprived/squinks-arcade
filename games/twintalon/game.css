@@ -1,0 +1,3 @@
+/* Twin Talon tweaks; layout/controls come from base.css. */
+.lives { letter-spacing: 1px; color: var(--accent); }
+#board { touch-action: none; }

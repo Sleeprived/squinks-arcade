@@ -14,7 +14,7 @@
  * GitHub Pages project URL, not just localhost root).
  */
 
-const CACHE = "squinks-v1";
+const CACHE = "squinks-v2";
 
 const PRECACHE = [
   ".",
@@ -57,6 +57,17 @@ const PRECACHE = [
   "games/chess/index.html",
   "games/chess/app.js",
   "games/chess/style.css",
+  "js/arcade-engine.js",
+  "js/shooter.js",
+  "games/muncher/index.html",
+  "games/muncher/game.js",
+  "games/muncher/game.css",
+  "games/stardivers/index.html",
+  "games/stardivers/game.js",
+  "games/stardivers/game.css",
+  "games/twintalon/index.html",
+  "games/twintalon/game.js",
+  "games/twintalon/game.css",
 ];
 
 self.addEventListener("install", (e) => {

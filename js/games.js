@@ -21,4 +21,7 @@ export const GAMES = [
   { id: "blackjack", name: "Blackjack", abbr: "BJ", label: "Chips", read: (g) => g("squinks.blackjack.chips") ?? 1000 },
   { id: "videopoker", name: "Video Poker", abbr: "VP", label: "Chips", read: (g) => g("squinks.videopoker.chips") ?? 1000 },
   { id: "chess", name: "Chess", abbr: "CH", label: "", read: () => "vs Stockfish" },
+  { id: "muncher", name: "Muncher", abbr: "MU", label: "Best", read: (g) => g("squinks.muncher.best") ?? 0 },
+  { id: "stardivers", name: "Star Divers", abbr: "SD", label: "Best", read: (g) => g("squinks.stardivers.best") ?? 0 },
+  { id: "twintalon", name: "Twin Talon", abbr: "TW", label: "Best", read: (g) => g("squinks.twintalon.best") ?? 0 },
 ];

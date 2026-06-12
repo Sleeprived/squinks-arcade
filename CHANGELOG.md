@@ -1,5 +1,42 @@
 # Changelog
 
+## 2026-06-12 — squinks-arcade-2.md (extension)
+### Added
+- **Three new games**, bringing the arcade to twelve, each portrait, touch +
+  keyboard, with a high score saved at `squinks.<id>.best`, a per-game reset,
+  a Pause control, and a "← Arcade" back link. All run offline after one
+  arcade load and are restyled by the theme switcher. All art is geometric and
+  drawn in canvas code — no image, sprite, or audio files added.
+  - **Muncher** (`games/muncher/`, badge **MU**) — original maze chomper on one
+    hand-designed, fully-connected maze. Four pursuers with distinct chase
+    styles (direct chaser / ambusher / wanderer / corner patroller);
+    power-pellets flip pursuers edible for an escalating 200/400/800/1600 bonus
+    chain; an occasional fruit bonus; a side tunnel that wraps left↔right; each
+    maze clear refills the maze and speeds the next one up; endless. Swipe /
+    on-screen d-pad / arrows / WASD.
+  - **Star Divers** (`games/stardivers/`, badge **SD**) — fixed-screen formation
+    shooter: enemies hold a grid, peel off and dive at the player. Drag the
+    lower screen to slide; the ship auto-fires continuously (Arrows / A,D on
+    desktop). The baseline shooter — no capture.
+  - **Twin Talon** (`games/twintalon/`, badge **TW**) — the shooter with a
+    capture mechanic: a captor can tractor-beam the ship. Capture costs a life
+    immediately; if it was your last ship the game ends with no rescue.
+    Destroying a captor that still carries the captive frees it into a **dual
+    fighter** (two ships, doubled fire); a death while dual costs one life and
+    reverts to a single ship.
+- **Shared shooter engine** (`js/shooter.js`) reused by both shooters, plus
+  shared canvas/theme/lives helpers (`js/arcade-engine.js`).
+- **Common game structure for all three:** endless with escalating waves, start
+  with 3 lives, a bonus life every 10,000 points capped at 5, game over at 0.
+- **Three new hub tiles** auto-rendered from `js/games.js` (MU, SD, TW), each
+  showing its best score.
+
+### Changed
+- Service worker cache bumped `squinks-v1` → `squinks-v2`, with the three new
+  game shells (and the two shared JS modules) added to the precache list, so a
+  returning visitor who already had the old cache receives the new games on the
+  next load.
+
 ## 2026-06-11 — fixes from squinks-arcade-build-audit.md
 ### Fixed
 - **Doodle Jump no longer distorts on resize (M2):** the canvas now only refits

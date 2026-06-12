@@ -1,6 +1,6 @@
 # Squinks Arcade
 
-An installable, offline arcade hub of nine browser games — vanilla HTML/CSS/JS,
+An installable, offline arcade hub of twelve browser games — vanilla HTML/CSS/JS,
 no build step, no backend, no network calls. Open the hub, pick a game, play.
 Scores and chip bankrolls are saved per-device in your browser.
 
@@ -8,9 +8,10 @@ Scores and chip bankrolls are saved per-device in your browser.
 
 ## Quick summary
 
-**What it is:** one web page (the "hub") that links to nine self-contained
+**What it is:** one web page (the "hub") that links to twelve self-contained
 games: Chess (vs Stockfish), Snake, 2048, Tetris, Minesweeper, Connect 4
-(vs an AI), Doodle Jump, Blackjack, and Video Poker. A shared service worker
+(vs an AI), Doodle Jump, Blackjack, Video Poker, Muncher (a maze chomper), and
+two formation shooters, Star Divers and Twin Talon. A shared service worker
 caches everything so the games keep working with no internet after the first
 load. It can be "installed" to a phone home screen like an app.
 
@@ -117,6 +118,20 @@ the phone while it is on the same Wi-Fi.
 - **Blackjack / Video Poker:** you start with 1,000 chips. Choose a bet, then
   play. If you hit 0 chips you get a "Reset bankroll" button to start again at
   1,000 (your peak-chips record is kept).
+- **Muncher:** clear the maze of pellets while four pursuers chase you. Swipe or
+  use the arrows / WASD / on-screen d-pad to turn. Eat a big **power-pellet** to
+  briefly turn the pursuers edible and chase them for a rising bonus; grab the
+  occasional fruit; the side tunnel wraps you across the screen. Clearing the
+  maze refills it and speeds the next one up. Start with 3 lives, gain one every
+  10,000 points (up to 5). **Pause** with the button or Space.
+- **Star Divers / Twin Talon (shooters):** hold and drag anywhere in the **lower
+  screen** to slide your ship; it **fires automatically** (Arrows or A/D on a
+  keyboard). Enemies hold a formation, then peel off and dive at you. Endless,
+  3 lives, bonus life every 10,000 points (up to 5). **Pause** with the button
+  or Space. In **Twin Talon**, a captor can tractor-beam your ship: a capture
+  costs a life immediately, and if it grabs your last ship the game ends. Shoot
+  a captor that is carrying your captured ship to free it as a **dual fighter**
+  (two ships firing together); dying then drops you back to a single ship.
 
 ### Common messages
 
@@ -125,7 +140,7 @@ the phone while it is on the same Wi-Fi.
 - **A game tile shows "—" or 0:** you have not set a score yet; play once.
 - **Chess says "Loading engine (~40 MB)…":** the first time you open Chess it
   downloads its neural-net engine. Do this once while online; afterwards it
-  works offline. The other eight games do not need this.
+  works offline. The other eleven games do not need this.
 
 ---
 
@@ -148,11 +163,14 @@ squinks-arcade/
     games.js              the game roster (drives the hub tiles)
     cards.js              shared deck/shuffle/card rendering (card games)
     hub.js                hub rendering + SW registration
+    arcade-engine.js      shared theme/canvas/lives helpers (the 3 new games)
+    shooter.js            shared formation-shooter engine (Star Divers, Twin Talon)
   icons/                  PWA PNG icons (192, 512, apple-touch 180)
   tools/make-icons.py     dev-only icon generator (not used at runtime)
   games/
     snake/ 2048/ tetris/ minesweeper/ connect4/ doodle/ blackjack/
       videopoker/         each: index.html + game.js + game.css
+    muncher/ stardivers/ twintalon/   the three new games (same shape)
     chess/                copied Stockfish app (its own style.css/theme)
 ```
 
@@ -160,14 +178,15 @@ squinks-arcade/
 
 - The service worker (`sw.js`) precaches the **app shell** (hub, shared CSS/JS,
   icons, manifest) **and every game's lightweight shell** (its HTML/CSS/JS) on
-  install. So after one load of the arcade, all nine game shells open offline.
+  install. So after one load of the arcade, all twelve game shells open offline.
 - It does **not** precache chess's heavy engine (~39 MB neural net + wasm).
   Those are cached at runtime the first time you open Chess. Open Chess once
   while online/local and it becomes fully offline-capable too.
 - The precache is **tolerant**: if one file fails it does not break the rest.
-- The cache name carries a version (`squinks-v1`). To ship an update, bump that
-  string in `sw.js`; the worker then clears old caches and takes over
-  immediately (`skipWaiting` + `clients.claim`).
+- The cache name carries a version (currently `squinks-v2`). To ship an update,
+  bump that string in `sw.js`; the worker then clears old caches and takes over
+  immediately (`skipWaiting` + `clients.claim`). This is how a returning visitor
+  who already had an older cache receives newly added games on the next load.
 
 ### Data & storage
 
@@ -191,6 +210,20 @@ default instead of breaking a game.
   1. Bet 1–5 credits.
 - **Connect 4 AI:** Easy = minimax depth 2 with a 25% chance of a random legal
   move; Medium = depth 4; Hard = depth 6 (alpha-beta pruned).
+- **Muncher:** one fixed, hand-designed maze. Four pursuers each chase
+  differently — a direct chaser (targets your cell), an ambusher (targets a few
+  cells ahead of you), a wanderer (random turns), and a patroller (cycles the
+  four corners). A power-pellet makes all four edible for ~7 seconds; eating
+  them in one window scores 200 → 400 → 800 → 1600, and an eaten pursuer
+  respawns at its start. Fruit (200) appears twice per maze. The middle row is a
+  wrap-around tunnel. Each maze clear refills pellets and raises the speed.
+- **Muncher / Star Divers / Twin Talon lives:** all three start at 3 lives, gain
+  one bonus life at every 10,000 points up to a cap of 5, and end at 0 lives.
+- **Twin Talon capture:** being tractor-beamed costs a life immediately; if it
+  was your last ship it is game over with no rescue. Destroying the captor while
+  it still carries your captured ship frees that ship into a dual fighter
+  (doubled fire); a death while flying the dual costs one life and reverts you
+  to a single ship.
 
 ### iOS notes
 
@@ -221,7 +254,7 @@ Pages serves every file as-is.
 - **Blank page / "module" error from `file://`:** you opened the HTML directly.
   Use the local server (`python -m http.server`) and a `http://` URL.
 - **Changes not showing after editing:** a service worker may be serving the
-  old cache. Bump the `squinks-v1` version in `sw.js`, or in DevTools →
+  old cache. Bump the `squinks-v2` version in `sw.js`, or in DevTools →
   Application → Service Workers, "Unregister" and reload.
 - **Chess won't load offline:** it was never opened while online, so its engine
   was never downloaded. Open it once with a connection.
