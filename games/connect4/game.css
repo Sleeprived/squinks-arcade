@@ -1,0 +1,19 @@
+.c4board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  width: min(96vw, 420px);
+  background: #1f4ed8; /* classic board blue, fixed for legibility */
+  padding: 6px;
+  border-radius: 0.6rem;
+  touch-action: manipulation;
+}
+.c4cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--bg);
+  cursor: pointer;
+}
+.c4cell.p1 { background: #e23636; } /* you (red) */
+.c4cell.p2 { background: #f6c945; } /* AI (yellow) */
+.diff.active { background: var(--accent); color: #fff; border-color: transparent; }

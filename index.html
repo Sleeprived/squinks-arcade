@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Squinks Arcade</title>
+  <meta name="description" content="An offline arcade hub of nine browser games." />
+  <script>
+    try {
+      var t = localStorage.getItem("squinks.theme");
+      document.documentElement.dataset.theme = ["neon", "dark", "playful"].indexOf(t) >= 0 ? t : "neon";
+    } catch (e) {
+      document.documentElement.dataset.theme = "neon";
+    }
+  </script>
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0d0b1e" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
+  <link rel="icon" href="icons/icon-192.png" />
+</head>
+<body>
+  <div class="topbar">
+    <h1><span class="brand">Squinks Arcade</span></h1>
+    <div class="theme-switch">
+      <label for="theme" class="hint">Theme</label>
+      <select id="theme" class="btn"></select>
+    </div>
+  </div>
+  <main>
+    <div class="grid" id="grid"></div>
+    <div class="hub-actions">
+      <button class="btn danger" id="reset-all">Reset all arcade data</button>
+    </div>
+  </main>
+  <script type="module" src="js/hub.js"></script>
+</body>
+</html>

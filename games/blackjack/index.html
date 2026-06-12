@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>Blackjack — Squinks Arcade</title>
+  <script>
+    try {
+      var t = localStorage.getItem("squinks.theme");
+      document.documentElement.dataset.theme = ["neon", "dark", "playful"].indexOf(t) >= 0 ? t : "neon";
+    } catch (e) {
+      document.documentElement.dataset.theme = "neon";
+    }
+  </script>
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <div class="topbar">
+    <a class="btn ghost" href="../../">&larr; Arcade</a>
+    <h1>Blackjack</h1>
+    <button class="btn danger" id="reset">Reset</button>
+  </div>
+  <div class="game-wrap">
+    <div class="scorebar">
+      <span>Chips: <b id="chips">1000</b></span>
+      <span class="muted">Peak: <b id="peak">1000</b></span>
+    </div>
+
+    <div class="hand" id="dealer">
+      <div class="meta">Dealer <span id="dealer-val"></span></div>
+      <div class="cardrow" id="dealer-cards"></div>
+    </div>
+
+    <div id="player-area"></div>
+
+    <p class="msg" id="msg"></p>
+
+    <div class="controls" id="bet-controls">
+      <button class="btn" id="bet-dn">&minus;5</button>
+      <span>Bet: <b id="bet">25</b></span>
+      <button class="btn" id="bet-up">+5</button>
+      <button class="btn" id="bet-max">Max</button>
+      <button class="btn accent" id="deal">Deal</button>
+    </div>
+
+    <div class="controls hidden" id="ins-controls">
+      <span>Dealer shows an Ace.</span>
+      <button class="btn accent" id="ins-yes">Insurance</button>
+      <button class="btn" id="ins-no">No thanks</button>
+    </div>
+
+    <div class="controls hidden" id="action-controls">
+      <button class="btn" id="hit">Hit</button>
+      <button class="btn" id="stand">Stand</button>
+      <button class="btn" id="double">Double</button>
+      <button class="btn" id="split">Split</button>
+    </div>
+
+    <div class="controls hidden" id="round-controls">
+      <button class="btn accent" id="next">Next hand</button>
+    </div>
+
+    <p class="hint">6-deck shoe · blackjack pays 3:2 · dealer stands on all 17s.</p>
+  </div>
+
+  <div class="overlay hidden" id="bust">
+    <div class="card">
+      <h2>Out of chips</h2>
+      <p>Your bankroll is empty.</p>
+      <button class="btn accent" id="rebuy">Reset bankroll (1000)</button>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

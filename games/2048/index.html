@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>2048 — Squinks Arcade</title>
+  <script>
+    try {
+      var t = localStorage.getItem("squinks.theme");
+      document.documentElement.dataset.theme = ["neon", "dark", "playful"].indexOf(t) >= 0 ? t : "neon";
+    } catch (e) {
+      document.documentElement.dataset.theme = "neon";
+    }
+  </script>
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <div class="topbar">
+    <a class="btn ghost" href="../../">&larr; Arcade</a>
+    <h1>2048</h1>
+    <button class="btn danger" id="reset">Reset</button>
+  </div>
+  <div class="game-wrap">
+    <div class="scorebar">
+      <span>Score: <b id="score">0</b></span>
+      <span class="muted">Best: <b id="best">0</b></span>
+    </div>
+    <div id="board" class="board2048"></div>
+    <button class="btn" id="new">New game</button>
+    <p class="hint">Swipe to slide tiles. Combine matching numbers to reach 2048.</p>
+  </div>
+  <div class="overlay hidden" id="over">
+    <div class="card">
+      <h2 id="over-title">Game Over</h2>
+      <p id="over-msg"></p>
+      <button class="btn accent" id="again">New game</button>
+    </div>
+  </div>
+  <script type="module" src="game.js"></script>
+</body>
+</html>

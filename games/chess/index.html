@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#262421" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Chess vs Stockfish</title>
+  <!-- Manifest is provided by the Squinks Arcade root; chess keeps its own theme. -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <p style="padding:0.6rem 0.9rem;margin:0"><a href="../../">&larr; Arcade</a></p>
+  <main>
+    <h1>♛ Chess vs Stockfish</h1>
+
+    <div class="layout">
+      <div class="evalbar" id="evalbar" title="Win probability">
+        <div class="evalbar-white" id="evalWhite"></div>
+        <span class="evalbar-num" id="evalNum">…</span>
+      </div>
+
+      <div id="board" class="board"></div>
+
+      <aside class="panel">
+        <div class="controls">
+          <label>Play as
+            <select id="color">
+              <option value="white">White</option>
+              <option value="black">Black</option>
+            </select>
+          </label>
+
+          <label>Difficulty: <span id="skillLabel">5</span>
+            <input id="skill" type="range" min="0" max="20" value="5" />
+          </label>
+
+          <button id="newGame">New game</button>
+          <div class="btn-row">
+            <button id="undo" class="secondary">⟲ Undo</button>
+            <button id="redo" class="secondary">Redo ⟳</button>
+          </div>
+          <button id="hint" class="secondary">💡 Hint</button>
+        </div>
+
+        <div id="status" class="status">Loading engine…</div>
+        <div id="turn" class="turn"></div>
+      </aside>
+    </div>
+
+    <div class="timeline" id="timeline">
+      <span class="timeline-empty">Loading…</span>
+    </div>
+  </main>
+
+  <div id="promoOverlay" class="overlay hidden">
+    <div class="promo">
+      <p>Promote to:</p>
+      <div class="promo-pieces">
+        <button data-p="q">♛</button>
+        <button data-p="r">♜</button>
+        <button data-p="b">♝</button>
+        <button data-p="n">♞</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

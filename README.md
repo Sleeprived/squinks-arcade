@@ -1,0 +1,264 @@
+# Squinks Arcade
+
+An installable, offline arcade hub of nine browser games — vanilla HTML/CSS/JS,
+no build step, no backend, no network calls. Open the hub, pick a game, play.
+Scores and chip bankrolls are saved per-device in your browser.
+
+---
+
+## Quick summary
+
+**What it is:** one web page (the "hub") that links to nine self-contained
+games: Chess (vs Stockfish), Snake, 2048, Tetris, Minesweeper, Connect 4
+(vs an AI), Doodle Jump, Blackjack, and Video Poker. A shared service worker
+caches everything so the games keep working with no internet after the first
+load. It can be "installed" to a phone home screen like an app.
+
+**Quick start (local test):**
+
+```
+cd squinks-arcade
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000/` in a browser. To play on your phone, find
+your PC's LAN IP (e.g. `192.168.1.20`) and open `http://192.168.1.20:8000/` on
+the phone while it is on the same Wi-Fi.
+
+> A static server is required because the games use ES modules, which browsers
+> refuse to load from a bare `file://` path. The server just hands files to the
+> browser — it does not process or send your data anywhere.
+
+---
+
+## Plain-English guide
+
+### Running it on your computer
+
+1. **Open a terminal in the project folder.** On Windows you can type `! ` in
+   Claude Code, or open PowerShell and run:
+
+   ```
+   cd squinks-arcade
+   ```
+
+   `cd` means "change directory" — it moves the terminal into the arcade
+   folder so the next command runs there.
+
+2. **Start a tiny local web server:**
+
+   ```
+   python -m http.server 8000
+   ```
+
+   Part by part: `python` runs Python; `-m http.server` tells Python to run its
+   built-in mini web server module; `8000` is the port number (an address on
+   your own machine). After you run it, Python keeps running and serves the
+   files in this folder. It listens only on your computer/LAN — nothing is sent
+   to the internet.
+
+3. **Open the arcade.** In your browser go to `http://localhost:8000/`.
+   `localhost` means "this same computer"; `:8000` is the port from step 2. You
+   should see the **Squinks Arcade** hub with a grid of game tiles.
+
+4. **Stop the server when done.** Click the terminal and press `Ctrl + C`.
+   That sends a "stop" signal to Python. The arcade pages you already loaded
+   may still work offline, but new loads need the server running again.
+
+### Playing on your phone (same Wi-Fi)
+
+1. Make sure the server from above is running on your PC.
+2. Find your PC's local network address. In PowerShell run `ipconfig` and look
+   for the "IPv4 Address" (looks like `192.168.x.x`).
+3. On the phone's browser, go to `http://<that-address>:8000/` — for example
+   `http://192.168.1.20:8000/`. The phone and PC must be on the same Wi-Fi.
+
+> **Important — offline and "install to home screen" do NOT work over a plain
+> `http://` LAN IP.** Browsers only enable the offline service worker and the
+> install prompt in a "secure context": that means **HTTPS**, or the special
+> addresses `localhost` / `127.0.0.1`. A LAN IP like `http://192.168.1.20:8000`
+> is not secure, so over LAN the games are fully playable **online**, but
+> airplane-mode offline and Add-to-Home-Screen will be unavailable — that is a
+> browser rule, not a bug. To test offline/install on a phone, deploy to GitHub
+> Pages (HTTPS — see "Deploying it live") and open that `https://` link, or use
+> an HTTPS tunnel. To test offline on your computer, use `http://localhost:8000`,
+> which counts as secure.
+
+### Installing it like an app
+
+- **Android (Chrome):** open the hub, tap the browser menu, choose "Add to
+  Home screen" / "Install app". It launches fullscreen with the arcade icon.
+- **iPhone (Safari):** open the hub, tap the Share button, choose "Add to Home
+  Screen". See the iOS notes below for details.
+
+### Using the arcade
+
+- **Pick a game:** tap a tile. Each tile shows that game's best stat (best
+  score, best time, win count, or current chips).
+- **Theme:** the **Theme** menu at the top right switches between *Neon Retro*
+  (default), *Clean Dark*, and *Bright & Playful*. Your choice is remembered.
+  (Chess keeps its own built-in look.)
+- **Back to the hub:** every game has a "← Arcade" button at the top left.
+- **Reset one game:** each game's "Reset" button clears just that game's score
+  or bankroll.
+- **Reset everything:** the hub's "Reset all arcade data" button wipes every
+  score, bankroll, and the saved theme (it asks first).
+
+### What you'll see in each game
+
+- **Snake / 2048 / Doodle Jump:** swipe (or hold a screen side, for Doodle) to
+  steer. Game-over screens show your score and best.
+- **Tetris:** on-screen buttons move, rotate, soft-drop, and hard-drop.
+- **Minesweeper:** tap to reveal, long-press (or right-click) to flag, or turn
+  on "Flag mode". Pick Beginner/Intermediate/Expert. Best time is saved per
+  difficulty.
+- **Connect 4:** choose Easy/Medium/Hard, then tap a column to drop a disc.
+  Your total wins against the AI are counted.
+- **Blackjack / Video Poker:** you start with 1,000 chips. Choose a bet, then
+  play. If you hit 0 chips you get a "Reset bankroll" button to start again at
+  1,000 (your peak-chips record is kept).
+
+### Common messages
+
+- **"Out of chips"** (Blackjack / Video Poker): your bankroll reached zero.
+  Tap "Reset bankroll (1000)" to keep playing.
+- **A game tile shows "—" or 0:** you have not set a score yet; play once.
+- **Chess says "Loading engine (~40 MB)…":** the first time you open Chess it
+  downloads its neural-net engine. Do this once while online; afterwards it
+  works offline. The other eight games do not need this.
+
+---
+
+## Detailed guide
+
+### Project layout
+
+```
+squinks-arcade/
+  index.html              hub (game grid, theme switcher, reset-all)
+  manifest.webmanifest    PWA manifest (installable, standalone, portrait)
+  sw.js                   root service worker (offline caching)
+  .nojekyll               tells GitHub Pages to serve files as-is
+  css/
+    themes.css            the three themes (CSS variables)
+    base.css              shared layout + components (incl. .pcard cards)
+  js/
+    storage.js            defensive localStorage helpers (squinks.* keys)
+    theme.js              theme load/apply/switch
+    games.js              the game roster (drives the hub tiles)
+    cards.js              shared deck/shuffle/card rendering (card games)
+    hub.js                hub rendering + SW registration
+  icons/                  PWA PNG icons (192, 512, apple-touch 180)
+  tools/make-icons.py     dev-only icon generator (not used at runtime)
+  games/
+    snake/ 2048/ tetris/ minesweeper/ connect4/ doodle/ blackjack/
+      videopoker/         each: index.html + game.js + game.css
+    chess/                copied Stockfish app (its own style.css/theme)
+```
+
+### How offline works
+
+- The service worker (`sw.js`) precaches the **app shell** (hub, shared CSS/JS,
+  icons, manifest) **and every game's lightweight shell** (its HTML/CSS/JS) on
+  install. So after one load of the arcade, all nine game shells open offline.
+- It does **not** precache chess's heavy engine (~39 MB neural net + wasm).
+  Those are cached at runtime the first time you open Chess. Open Chess once
+  while online/local and it becomes fully offline-capable too.
+- The precache is **tolerant**: if one file fails it does not break the rest.
+- The cache name carries a version (`squinks-v1`). To ship an update, bump that
+  string in `sw.js`; the worker then clears old caches and takes over
+  immediately (`skipWaiting` + `clients.claim`).
+
+### Data & storage
+
+All progress is stored in your browser's `localStorage` under keys namespaced
+`squinks.<game>.<field>` (e.g. `squinks.snake.best`, `squinks.blackjack.chips`,
+`squinks.theme`). There is no account, server, cookie, or cloud sync — clearing
+the browser's site data (or "Reset all arcade data") erases it. Stored values
+are parsed defensively: a missing or corrupted value falls back to a safe
+default instead of breaking a game.
+
+### Game rules of note
+
+- **Blackjack:** 6-deck shoe reshuffled near 75% penetration; blackjack pays
+  3:2; dealer stands on all 17s including soft 17; Double on any first two
+  cards; Double-after-split allowed; Split once (max 2 hands), split Aces get
+  one card each and cannot re-hit; Insurance offered (pays 2:1) when the dealer
+  shows an Ace.
+- **Video Poker:** Jacks-or-Better on the 9/6 paytable, per coin: Royal Flush
+  250 (4000 at a 5-credit bet), Straight Flush 50, Four of a Kind 25, Full
+  House 9, Flush 6, Straight 4, Three of a Kind 3, Two Pair 2, Jacks-or-Better
+  1. Bet 1–5 credits.
+- **Connect 4 AI:** Easy = minimax depth 2 with a 25% chance of a random legal
+  move; Medium = depth 4; Hard = depth 6 (alpha-beta pruned).
+
+### iOS notes
+
+- Installing on iPhone uses Safari → Share → **Add to Home Screen**. A PNG
+  `apple-touch-icon` (180×180) is included because iOS does not reliably use an
+  SVG manifest icon for the home-screen icon.
+- iOS may **evict the offline cache** after about 7 days of non-use or under
+  storage pressure. If a game stops loading offline, reconnect once and open
+  the arcade to refresh the cache.
+
+### Deploying it live (when you choose)
+
+This project is built to run from a **subpath** (all paths are relative), which
+is exactly what GitHub Pages *project* sites need
+(`https://<user>.github.io/squinks-arcade/`).
+
+> Free GitHub Pages will not serve a **private** repo. To go live you must make
+> the repo public, then enable Pages. The build process does not do this for
+> you — it is a deliberate manual step.
+
+Rough steps when you're ready: create the repo `Sleeprived/squinks-arcade`,
+push this folder, make it public, then in the repo's **Settings → Pages** set
+the source to the `main` branch root. The `.nojekyll` file is already here so
+Pages serves every file as-is.
+
+### Troubleshooting
+
+- **Blank page / "module" error from `file://`:** you opened the HTML directly.
+  Use the local server (`python -m http.server`) and a `http://` URL.
+- **Changes not showing after editing:** a service worker may be serving the
+  old cache. Bump the `squinks-v1` version in `sw.js`, or in DevTools →
+  Application → Service Workers, "Unregister" and reload.
+- **Chess won't load offline:** it was never opened while online, so its engine
+  was never downloaded. Open it once with a connection.
+- **Offline / install missing on my phone over Wi-Fi:** you are on a plain
+  `http://` LAN IP, which is not a secure context, so the service worker and
+  install prompt are disabled. Use the HTTPS GitHub Pages link (or `localhost`
+  on the PC) to get offline and Add-to-Home-Screen. See "Playing on your phone."
+
+---
+
+## Glossary
+
+- **PWA (Progressive Web App):** a website that can be installed and run like a
+  native app, including offline, using a manifest and a service worker.
+- **Service worker:** a background script the browser runs for a site; here it
+  intercepts requests and serves cached files so the arcade works offline.
+- **Manifest (`.webmanifest`):** a small JSON file describing the app's name,
+  icons, colors, and how it launches (here: standalone, portrait).
+- **Cache-first:** a strategy where the service worker returns a cached copy if
+  it has one, only hitting the network when it doesn't.
+- **Precache:** files cached up front when the service worker installs, so they
+  are available offline immediately.
+- **localStorage:** a small per-site key/value store in the browser that
+  persists across visits on that one device.
+- **ES modules:** JavaScript files that use `import`/`export`; browsers only
+  load them over `http(s)`, not `file://`, which is why a local server is used.
+- **Subpath / project site:** a site served from a folder under a domain
+  (`/squinks-arcade/`) rather than the domain root, as GitHub Pages project
+  sites are — the reason all paths here are relative.
+- **NNUE:** the neural-network evaluation file Stockfish uses to judge chess
+  positions; it is the large (~39 MB) download chess needs once.
+- **Minimax / alpha-beta:** the algorithm the Connect 4 AI uses to look ahead
+  several moves and pick a strong one; alpha-beta pruning skips branches that
+  cannot change the result, making deeper search fast.
+- **Penetration (Blackjack):** how far into the shoe the dealer deals before
+  reshuffling; here about 75%.
+- **Static server / port:** a program that hands files to browsers; a port
+  (like 8000) is a numbered channel on your machine it listens on.
+- **LAN IP:** your device's address on the local network (e.g. 192.168.x.x),
+  used to reach the PC's server from your phone.

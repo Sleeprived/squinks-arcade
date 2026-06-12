@@ -1,0 +1,19 @@
+.board2048 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: min(90vw, 400px);
+  aspect-ratio: 1 / 1;
+  background: var(--border);
+  padding: 8px;
+  border-radius: 0.6rem;
+  touch-action: none;
+}
+.board2048 .cell {
+  display: grid;
+  place-items: center;
+  border-radius: 0.4rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  user-select: none;
+}

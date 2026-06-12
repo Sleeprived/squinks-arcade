@@ -1,0 +1,2 @@
+/* Snake-specific tweaks; layout/controls come from base.css. */
+#board { image-rendering: pixelated; }

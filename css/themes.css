@@ -1,0 +1,55 @@
+/* Three themes via [data-theme] on <html>. Neon is the default (also :root so a
+   missing/invalid stored theme still paints). Variables drive all UI chrome;
+   canvas games read these at runtime for backgrounds/accents. */
+
+:root,
+[data-theme="neon"] {
+  --bg: #0d0b1e;
+  --bg2: #171433;
+  --panel: #1d1840;
+  --text: #ede9ff;
+  --muted: #a39ccc;
+  --accent: #ff2e97;
+  --accent2: #2de2e6;
+  --border: #3a2f6b;
+  --btn-bg: #2a2350;
+  --btn-text: #ffffff;
+  --danger: #ff4d6d;
+  --tile-bg: #1d1840;
+  --shadow: 0 0 18px rgba(255, 46, 151, 0.25);
+  --theme-color: #0d0b1e;
+}
+
+[data-theme="dark"] {
+  --bg: #15171c;
+  --bg2: #1d2027;
+  --panel: #22262f;
+  --text: #e6e8ec;
+  --muted: #9aa0ab;
+  --accent: #5b9dff;
+  --accent2: #7ee0c0;
+  --border: #333843;
+  --btn-bg: #2b303a;
+  --btn-text: #ffffff;
+  --danger: #e5534b;
+  --tile-bg: #22262f;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --theme-color: #15171c;
+}
+
+[data-theme="playful"] {
+  --bg: #fff7ef;
+  --bg2: #ffe9d6;
+  --panel: #ffffff;
+  --text: #3a2c4a;
+  --muted: #8a7d96;
+  --accent: #ff7a59;
+  --accent2: #3ec6ff;
+  --border: #ffd3b6;
+  --btn-bg: #ffd23f;
+  --btn-text: #3a2c4a;
+  --danger: #ef476f;
+  --tile-bg: #ffffff;
+  --shadow: 0 6px 16px rgba(255, 122, 89, 0.22);
+  --theme-color: #fff7ef;
+}

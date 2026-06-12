@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>Video Poker — Squinks Arcade</title>
+  <script>
+    try {
+      var t = localStorage.getItem("squinks.theme");
+      document.documentElement.dataset.theme = ["neon", "dark", "playful"].indexOf(t) >= 0 ? t : "neon";
+    } catch (e) {
+      document.documentElement.dataset.theme = "neon";
+    }
+  </script>
+  <link rel="stylesheet" href="../../css/themes.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <div class="topbar">
+    <a class="btn ghost" href="../../">&larr; Arcade</a>
+    <h1>Video Poker</h1>
+    <button class="btn danger" id="reset">Reset</button>
+  </div>
+  <div class="game-wrap">
+    <div class="scorebar">
+      <span>Chips: <b id="chips">1000</b></span>
+      <span class="muted">Peak: <b id="peak">1000</b></span>
+    </div>
+
+    <table id="paytable"></table>
+
+    <div class="cardrow" id="hand"></div>
+    <p class="msg" id="msg">Jacks or Better. Set your bet and deal.</p>
+
+    <div class="controls">
+      <button class="btn" id="bet-dn">&minus;</button>
+      <span>Bet: <b id="bet">1</b> / 5</span>
+      <button class="btn" id="bet-up">+</button>
+      <button class="btn" id="bet-max">Max (5)</button>
+      <button class="btn accent" id="action">Deal</button>
+    </div>
+    <p class="hint">Tap cards to hold after the deal, then Draw. Royal Flush pays 4000 at a 5-credit bet.</p>
+  </div>
+
+  <div class="overlay hidden" id="bust">
+    <div class="card">
+      <h2>Out of chips</h2>
+      <p>Your bankroll is empty.</p>
+      <button class="btn accent" id="rebuy">Reset bankroll (1000)</button>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

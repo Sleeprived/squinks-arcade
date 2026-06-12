@@ -1,0 +1,24 @@
+.msboard {
+  display: grid;
+  gap: 3px;
+  width: min(96vw, 460px);
+  background: var(--border);
+  padding: 3px;
+  border-radius: 0.5rem;
+  touch-action: manipulation;
+  user-select: none;
+}
+.msboard .cell {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  background: var(--btn-bg);
+  border-radius: 3px;
+  font-weight: 800;
+  font-size: clamp(0.7rem, 3.5vw, 1.1rem);
+  cursor: pointer;
+}
+.msboard .cell.open { background: var(--bg2); cursor: default; }
+.msboard .cell.mine { background: var(--danger); color: #fff; }
+.msboard .cell.flag { color: var(--accent); }
+.diff.active { background: var(--accent); color: #fff; border-color: transparent; }
