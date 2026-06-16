@@ -219,19 +219,19 @@ export class ShooterEngine {
     }
     const py = this.H - p.h - 8;
 
-    if (this.invuln > 0) this.invuln -= dt * 16;
+    if (this.invuln > 0) this.invuln -= dt;
     if (this.respawnTimer > 0) {
-      this.respawnTimer -= dt * 16;
+      this.respawnTimer -= dt;
       if (this.respawnTimer <= 0 && this.lives.count > 0) {
         p.alive = true;
         this.invuln = 70;
       }
     }
 
-    // auto-fire
-    this.fireTimer -= dt * 16;
+    // auto-fire (~8 shots/sec: one shot every 8 frames)
+    this.fireTimer -= dt;
     if (p.alive && this.fireTimer <= 0) {
-      this.fireTimer = 16;
+      this.fireTimer = 8;
       const by = py;
       const bw = this.unit * 0.16;
       if (this.dual) {
@@ -319,7 +319,7 @@ export class ShooterEngine {
     for (const pt of this.particles) {
       pt.x += pt.vx * dt;
       pt.y += pt.vy * dt;
-      pt.life -= dt * 16;
+      pt.life -= dt;
     }
     this.particles = this.particles.filter((pt) => pt.life > 0);
   }

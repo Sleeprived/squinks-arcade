@@ -452,15 +452,15 @@ function banner(text) {
 // ---- loop --------------------------------------------------------------
 function update(dt) {
   if (ready > 0) {
-    ready -= dt * 16;
+    ready -= dt;
     return;
   }
   if (powerTime > 0) {
-    powerTime -= dt * 16;
+    powerTime -= dt;
     if (powerTime <= 0) chain = 0;
   }
   if (fruit && fruitTime > 0) {
-    fruitTime -= dt * 16;
+    fruitTime -= dt;
     if (fruitTime <= 0) fruit = false;
   }
   stepPlayer(dt);

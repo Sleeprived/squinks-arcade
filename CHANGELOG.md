@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-06-16 — gameplay timer fixes (Muncher, Star Divers, Twin Talon)
+### Fixed
+- **Muncher power-pellet, fruit, and "Ready!" timers were ~16× too short.** A
+  stray `dt * 16` in their countdowns (the rest of the game advances by `dt`)
+  drained them almost instantly. Now the power-pellet edible window lasts ~7s
+  (was ~0.45s — the reported "split second"), fruit stays ~9s (was ~0.57s), and
+  the "Ready!" pause is ~1.5s (was a ~0.1s flash) at the start of each life/maze.
+- **Star Divers & Twin Talon (shared `js/shooter.js`) had the identical bug in
+  four timers.** Fixed: post-respawn invulnerability is ~1.2s (was ~0.07s, so you
+  could be re-killed the instant you respawned), the respawn delay is ~1.0–1.5s
+  (was ~0.07s, basically no beat), and explosion particles last ~0.5s (were
+  ~0.03s — effectively invisible).
+- **Auto-fire rate normalised** from an unintended ~60-shots/sec firehose to
+  ~7.5 shots/sec (one shot every 8 frames), frame-rate-independent.
+
 ## 2026-06-15 — auto-updating service worker (network-first) + offline kept
 ### Changed
 - **Service worker switched from cache-first to network-first** for the app's
