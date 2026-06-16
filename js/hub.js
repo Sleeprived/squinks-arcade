@@ -77,6 +77,17 @@ document.getElementById("reset-all").addEventListener("click", () => {
 });
 
 if ("serviceWorker" in navigator) {
+  // When a NEW worker takes control (an update shipped), reload once so a normal
+  // refresh after a deploy shows the latest. Guarded two ways: skip the very
+  // first install (its initial claim also fires controllerchange — no reload
+  // wanted there), and a one-shot flag so it can never loop.
+  const hadController = !!navigator.serviceWorker.controller;
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshing || !hadController) return;
+    refreshing = true;
+    location.reload();
+  });
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   });

@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-06-15 — auto-updating service worker (network-first) + offline kept
+### Changed
+- **Service worker switched from cache-first to network-first** for the app's
+  own files (cache `squinks-v3` → `squinks-v4`). While online, a normal refresh
+  now fetches the latest from the server, so a new deploy appears on the next
+  refresh instead of being trapped behind a stale cache. When offline, it falls
+  back to the cached copy, so a once-loaded arcade still works with no internet
+  (navigations fall back to the cached hub).
+- **Chess's heavy engine stays cache-first** (`games/chess/vendor/`), so it is
+  never re-downloaded.
+- **Added an auto-reload hook** (`js/hub.js`): when a new service worker takes
+  control after a deploy, the hub reloads itself once so the update applies
+  without a manual hard-refresh or cache clear. Guarded so it never reloads on a
+  first visit and never loops.
+
+### Note
+- Returning visitors still on the old cache-first worker need to clear it
+  **once** (hard-refresh / unregister the worker / clear site data) to pick up
+  this network-first worker. After that, updates apply on a normal refresh.
+
 ## 2026-06-15 — service worker bump for the big-push games
 ### Changed
 - **Service worker cache bumped `squinks-v2` → `squinks-v3`**, with the seven

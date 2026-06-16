@@ -201,18 +201,24 @@ squinks-arcade/
 
 ### How offline works
 
-- The service worker (`sw.js`) precaches the **app shell** (hub, shared CSS/JS,
-  icons, manifest) **and all nineteen game shells** (their HTML/CSS/JS) on
-  install. After one load of the arcade, every game opens offline.
-- It does **not** precache chess's heavy engine (~39 MB neural net + wasm);
-  those are cached at runtime the first time you open Chess. Open Chess once
-  while online/local and it becomes fully offline-capable too.
+- On install the worker **precaches** the app shell (hub, shared CSS/JS, icons,
+  manifest) **and all nineteen game shells** (their HTML/CSS/JS), so every game
+  is available offline after one load of the arcade.
+- Day-to-day it serves **network-first**: when you're online, each refresh
+  fetches the latest from the server (so a new deploy shows up on the next
+  refresh) and quietly refreshes the cache; when you're offline, it falls back
+  to the cached copy, so once loaded the arcade keeps working with no internet.
+  An offline navigation to an uncached page falls back to the cached hub.
+- Chess's heavy engine (~39 MB neural net + wasm) is the one exception: it stays
+  **cache-first** so it is never re-downloaded, and it is fetched the first time
+  you open Chess (do that once while online, then it works offline too).
 - The precache is **tolerant**: if one file fails it does not break the rest.
-- The cache name carries a version (currently `squinks-v3`). To ship an update,
-  bump that string in `sw.js` (and add any new game shells to `PRECACHE`); the
-  worker then clears old caches and takes over immediately (`skipWaiting` +
-  `clients.claim`). This is how a returning visitor who already had an older
-  cache receives newly added games on the next load.
+- The cache name carries a version (currently `squinks-v4`). Because fetches are
+  network-first, **content updates appear on a normal refresh while online — no
+  version bump needed.** Bumping the version (with `skipWaiting` /
+  `clients.claim`, plus the hub's auto-reload-when-a-new-worker-takes-control
+  hook) is only needed when the service worker's own logic changes; it retires
+  the old cache cleanly and the open page reloads itself once to pick it up.
 
 ### Data & storage
 

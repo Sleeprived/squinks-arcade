@@ -2,19 +2,29 @@
  *
  * INSTALL precaches the app shell + every game's lightweight shell (HTML/CSS/JS
  * and icons) so every game loads offline immediately after one arcade load.
- * It deliberately does NOT precache chess's heavy engine (~38 MB NNUE + wasm);
- * those are runtime-cached cache-first when chess is first opened.
+ *
+ * FETCH uses NETWORK-FIRST for the app's own files: when online, a refresh
+ * always fetches the latest from the network (so a fresh deploy shows up on the
+ * next refresh) and the cache is refreshed in the background; when offline (or
+ * the network fails), it falls back to the cached copy, so once loaded the
+ * arcade keeps working with no internet. Navigations fall back to the cached
+ * hub when offline and uncached.
+ *
+ * Chess's heavy engine (~38 MB NNUE + wasm under games/chess/vendor/) is the one
+ * exception: it stays CACHE-FIRST so it is never re-downloaded once cached, and
+ * it is not precached (it is fetched the first time chess is opened).
  *
  * The precache is tolerant: each entry is added independently, so one missing
- * file never sinks the install or kills offline. Runtime caching is likewise
- * best-effort. The cache name carries a version; bumping it + skipWaiting +
- * clients.claim retires stale caches so updates are not trapped.
+ * file never sinks the install or kills offline. The cache name carries a
+ * version; bumping it + skipWaiting + clients.claim retires stale caches, and
+ * the hub reloads once when a new worker takes control so worker updates apply
+ * without a manual cache clear.
  *
  * All paths are RELATIVE so the SW scope is the deployed subpath (works at a
  * GitHub Pages project URL, not just localhost root).
  */
 
-const CACHE = "squinks-v3";
+const CACHE = "squinks-v4";
 
 const PRECACHE = [
   ".",
@@ -112,30 +122,51 @@ self.addEventListener("activate", (e) => {
   );
 });
 
+async function putInCache(request, response) {
+  if (response && response.status === 200) {
+    const cache = await caches.open(CACHE);
+    cache.put(request, response.clone()).catch(() => {});
+  }
+}
+
+// Cache-first: only for chess's heavy, immutable vendor files.
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const resp = await fetch(request);
+    await putInCache(request, resp);
+    return resp;
+  } catch {
+    return Response.error();
+  }
+}
+
+// Network-first: latest when online, cached copy when offline.
+async function networkFirst(request) {
+  try {
+    const resp = await fetch(request);
+    await putInCache(request, resp);
+    return resp;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (request.mode === "navigate") {
+      const fallback = await caches.match("index.html");
+      if (fallback) return fallback;
+    }
+    return Response.error();
+  }
+}
+
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
-  if (url.origin !== location.origin) return;
+  if (url.origin !== location.origin) return; // let cross-origin pass through
 
-  e.respondWith(
-    (async () => {
-      const cached = await caches.match(e.request);
-      if (cached) return cached;
-      try {
-        const resp = await fetch(e.request);
-        if (resp && resp.status === 200) {
-          const cache = await caches.open(CACHE);
-          cache.put(e.request, resp.clone()).catch(() => {});
-        }
-        return resp;
-      } catch {
-        // Offline and uncached: fall back to the hub for navigations.
-        if (e.request.mode === "navigate") {
-          const fallback = await caches.match("index.html");
-          if (fallback) return fallback;
-        }
-        return Response.error();
-      }
-    })()
-  );
+  if (url.pathname.includes("/games/chess/vendor/")) {
+    e.respondWith(cacheFirst(e.request));
+  } else {
+    e.respondWith(networkFirst(e.request));
+  }
 });
