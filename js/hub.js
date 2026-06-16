@@ -1,4 +1,4 @@
-import { GAMES } from "./games.js";
+import { GAMES, CATEGORIES } from "./games.js";
 import { getNumber, clearAllArcadeData } from "./storage.js";
 import { THEMES, getTheme, setTheme, initTheme } from "./theme.js";
 
@@ -7,10 +7,12 @@ initTheme();
 const g = (key) => getNumber(key, null);
 
 const grid = document.getElementById("grid");
+const tiles = [];
 for (const game of GAMES) {
   const a = document.createElement("a");
   a.className = "tile";
   a.href = `games/${game.id}/`;
+  a.dataset.category = game.category;
 
   const badge = document.createElement("div");
   badge.className = "badge";
@@ -27,7 +29,35 @@ for (const game of GAMES) {
 
   a.append(badge, name, stat);
   grid.appendChild(a);
+  tiles.push(a);
 }
+
+// ---- category filter ----
+const filterBar = document.getElementById("filter");
+let active = "All";
+
+function applyFilter() {
+  for (const tile of tiles) {
+    tile.classList.toggle("hidden", active !== "All" && tile.dataset.category !== active);
+  }
+  for (const chip of filterBar.children) {
+    chip.classList.toggle("active", chip.dataset.cat === active);
+  }
+}
+
+for (const cat of ["All", ...CATEGORIES]) {
+  const chip = document.createElement("button");
+  chip.className = "chip";
+  chip.type = "button";
+  chip.dataset.cat = cat;
+  chip.textContent = cat;
+  chip.addEventListener("click", () => {
+    active = cat;
+    applyFilter();
+  });
+  filterBar.appendChild(chip);
+}
+applyFilter();
 
 const sel = document.getElementById("theme");
 for (const t of THEMES) {

@@ -1,0 +1,26 @@
+#board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  width: 340px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.t15 {
+  display: grid;
+  place-items: center;
+  border-radius: 0.6rem;
+  font-weight: 800;
+  font-size: 1.6rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid var(--border);
+}
+.t15:active { transform: scale(0.96); }
+.t15.blank {
+  background: transparent;
+  border: 1px dashed var(--border);
+  cursor: default;
+}

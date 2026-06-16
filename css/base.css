@@ -150,6 +150,42 @@ canvas {
 .theme-switch { display: flex; align-items: center; gap: 0.4rem; }
 .hint { font-size: 0.85rem; color: var(--muted); text-align: center; }
 
+/* Hub category filter chips. */
+.filter-bar {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.filter-bar .chip {
+  font: inherit;
+  border: 1px solid var(--border);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.filter-bar .chip.active { background: var(--accent); color: #fff; border-color: transparent; }
+
+/* "How to play" block — sits at the BOTTOM of each game page, below the play
+   area, so it never crowds or shifts the game screen. */
+.howto {
+  max-width: 560px;
+  margin: 1rem auto 2.5rem;
+  padding: 0 1.2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.howto h2 { font-size: 1rem; color: var(--text); margin: 0 0 0.5rem; }
+.howto ul { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+.howto li { margin: 0.25rem 0; }
+.howto b { color: var(--text); }
+
 /* Playing-card component (Blackjack, Video Poker). Fixed face colors for
    legibility; the surrounding chrome still follows the theme. Named .pcard to
    avoid clashing with the .card overlay dialog box. */

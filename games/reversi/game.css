@@ -1,0 +1,32 @@
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  width: 360px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--border);
+  border: 2px solid var(--border);
+  border-radius: 0.4rem;
+}
+.rvcell {
+  position: relative;
+  background: #2e7d54;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.rv-disc {
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+}
+.rv-disc.p1 { background: radial-gradient(circle at 35% 30%, #555, #111); }
+.rv-disc.p2 { background: radial-gradient(circle at 35% 30%, #fff, #c8c8c8); }
+.rvcell .legal {
+  width: 26%;
+  height: 26%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+}
+.controls .diff.active { background: var(--accent); color: #fff; border-color: transparent; }

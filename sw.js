@@ -1,7 +1,7 @@
 /* Squinks Arcade root service worker.
  *
  * INSTALL precaches the app shell + every game's lightweight shell (HTML/CSS/JS
- * and icons) so all nine games load offline immediately after one arcade load.
+ * and icons) so every game loads offline immediately after one arcade load.
  * It deliberately does NOT precache chess's heavy engine (~38 MB NNUE + wasm);
  * those are runtime-cached cache-first when chess is first opened.
  *
@@ -14,7 +14,7 @@
  * GitHub Pages project URL, not just localhost root).
  */
 
-const CACHE = "squinks-v2";
+const CACHE = "squinks-v3";
 
 const PRECACHE = [
   ".",
@@ -68,6 +68,27 @@ const PRECACHE = [
   "games/twintalon/index.html",
   "games/twintalon/game.js",
   "games/twintalon/game.css",
+  "games/breakout/index.html",
+  "games/breakout/game.js",
+  "games/breakout/game.css",
+  "games/asteroids/index.html",
+  "games/asteroids/game.js",
+  "games/asteroids/game.css",
+  "games/puzzle15/index.html",
+  "games/puzzle15/game.js",
+  "games/puzzle15/game.css",
+  "games/reversi/index.html",
+  "games/reversi/game.js",
+  "games/reversi/game.css",
+  "games/simon/index.html",
+  "games/simon/game.js",
+  "games/simon/game.css",
+  "games/whack/index.html",
+  "games/whack/game.js",
+  "games/whack/game.css",
+  "games/roulette/index.html",
+  "games/roulette/game.js",
+  "games/roulette/game.css",
 ];
 
 self.addEventListener("install", (e) => {

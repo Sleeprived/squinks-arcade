@@ -1,0 +1,15 @@
+#board {
+  width: 400px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+}
+#pad {
+  width: 100%;
+  max-width: 400px;
+}
+#pad .btn {
+  flex: 1;
+  min-width: 64px;
+  padding: 0.7rem 0.4rem;
+  font-size: 1.05rem;
+}

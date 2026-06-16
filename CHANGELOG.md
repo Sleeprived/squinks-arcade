@@ -1,5 +1,73 @@
 # Changelog
 
+## 2026-06-15 — service worker bump for the big-push games
+### Changed
+- **Service worker cache bumped `squinks-v2` → `squinks-v3`**, with the seven
+  big-push game shells (Breakout, Asteroids, 15-Puzzle, Reversi, Simon,
+  Whack-a-Mole, Roulette) added to the precache list. A returning visitor who
+  already had the `squinks-v2` cache now receives the new hub (with all nineteen
+  tiles) and the new games on the next load, and every game shell is precached
+  for offline use — no longer relying on per-game runtime caching.
+
+## 2026-06-15 — fixes from squinks-arcade-build-audit-3.md
+### Fixed
+- **Asteroids no longer carries a held control into the next game (m1):**
+  `newGame()` now clears the rotate/thrust/fire input flags, so starting a new
+  game while a key or on-screen button is still held no longer makes the fresh
+  ship thrust or fire on its own.
+- **Roulette straight-number bets use an unambiguous key (m2):** a single-number
+  bet is now stored as `num:<n>` instead of `n<n>`, removing the fragile
+  reliance on no other bet id starting with the letter "n" (payouts unchanged).
+- **Roulette result badge starts neutral (m3):** before the first spin the
+  badge shows "–" with no colour, instead of being tinted green from a
+  placeholder zero.
+
+## 2026-06-15 — big-push expansion (freehand)
+### Added
+- **Seven new games**, bringing the arcade to nineteen. Each is portrait,
+  touch + keyboard, with its stat saved under `squinks.<id>.*`, a per-game
+  reset, a "← Arcade" back link, and a full **"How to play"** section pinned to
+  the bottom of the page (below the play area, so it never crowds the game). No
+  image, sprite, or audio files were added — all visuals are canvas/DOM/CSS.
+  - **Breakout** (`games/breakout/`, badge **BK**) — paddle/ball/brick canvas
+    game at a fixed internal resolution (resize-safe physics, sub-stepped so the
+    ball can't tunnel through bricks/paddle); drag or ←/→ paddle, tap/Space
+    launch, 5 brick rows, rising level speed, 3 lives; best score.
+  - **Asteroids** (`games/asteroids/`, badge **AS**) — vector ship with
+    rotate/thrust/fire (on-screen buttons or arrows + Space), screen wrap, rocks
+    that split large→medium→small, escalating waves; uses the shared lives model
+    (3 lives, bonus every 10,000, cap 5); best score.
+  - **15-Puzzle** (`games/puzzle15/`, badge **15**) — 4×4 sliding tiles, always
+    solvable (scrambled by legal walks from solved), tap or arrow keys; separate
+    best-moves and fastest-time records.
+  - **Reversi** (`games/reversi/`, badge **RV**) — Othello vs an AI; legal-move
+    highlighting, automatic passes, alpha-beta minimax (Easy 1-ply + occasional
+    random / Medium 3-ply / Hard 4-ply) over a positional weight map + mobility;
+    win counter.
+  - **Simon** (`games/simon/`, badge **SI**) — visual-only colour-sequence
+    memory (no sound), sequence grows and speeds up each round; best level.
+  - **Whack-a-Mole** (`games/whack/`, badge **WM**) — 3×3 holes, 30-second
+    round, moles appear faster as the clock runs down; best score.
+  - **Roulette** (`games/roulette/`, badge **RO**) — European single-zero wheel;
+    Red/Black, Even/Odd, 1–18/19–36 (1:1), dozens (2:1), straight number (35:1);
+    stake multiple bets from a 1,000-chip bankroll with peak tracking and a
+    rebuy on bust. Reuses the chips pattern from Blackjack/Video Poker.
+- **Hub categories + filter:** each `js/games.js` entry now carries a `category`
+  (Arcade / Puzzle / Skill / Cards), and the hub shows a filter bar (All + one
+  chip per category) to narrow the now-nineteen tiles. The existing twelve games
+  were categorised too — a pure data change, no game code touched.
+- Shared `.howto` and `.filter-bar` styles in `css/base.css`; a design doc in
+  `docs/2026-06-15-big-push-design.md`.
+
+### Not changed (intentionally)
+- **The service worker was deliberately left at `squinks-v2`.** The seven new
+  shells are NOT in the precache list, so they rely on cache-first *runtime*
+  caching (offline after one online open, like chess's engine), and a returning
+  visitor who already cached `squinks-v2` keeps the old hub until the version is
+  bumped. Bumping `squinks-v2` → `squinks-v3` and adding the new shells to
+  `PRECACHE` is a deferred change (one line + seven list entries).
+- No sound engine was added (Simon is intentionally visual-only).
+
 ## 2026-06-12 — squinks-arcade-2.md (extension)
 ### Added
 - **Three new games**, bringing the arcade to twelve, each portrait, touch +

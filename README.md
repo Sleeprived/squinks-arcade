@@ -1,6 +1,6 @@
 # Squinks Arcade
 
-An installable, offline arcade hub of twelve browser games — vanilla HTML/CSS/JS,
+An installable, offline arcade hub of nineteen browser games — vanilla HTML/CSS/JS,
 no build step, no backend, no network calls. Open the hub, pick a game, play.
 Scores and chip bankrolls are saved per-device in your browser.
 
@@ -8,12 +8,15 @@ Scores and chip bankrolls are saved per-device in your browser.
 
 ## Quick summary
 
-**What it is:** one web page (the "hub") that links to twelve self-contained
+**What it is:** one web page (the "hub") that links to nineteen self-contained
 games: Chess (vs Stockfish), Snake, 2048, Tetris, Minesweeper, Connect 4
-(vs an AI), Doodle Jump, Blackjack, Video Poker, Muncher (a maze chomper), and
-two formation shooters, Star Divers and Twin Talon. A shared service worker
-caches everything so the games keep working with no internet after the first
-load. It can be "installed" to a phone home screen like an app.
+(vs an AI), Doodle Jump, Blackjack, Video Poker, Muncher (a maze chomper),
+two formation shooters (Star Divers and Twin Talon), plus the big-push batch —
+Breakout, Asteroids, 15-Puzzle, Reversi (vs an AI), Simon, Whack-a-Mole, and
+Roulette. The hub groups the tiles by category (Arcade / Puzzle / Skill /
+Cards) with a filter bar. A shared service worker caches the games so they keep
+working with no internet after the first load. It can be "installed" to a phone
+home screen like an app.
 
 **Quick start (local test):**
 
@@ -96,6 +99,10 @@ the phone while it is on the same Wi-Fi.
 
 - **Pick a game:** tap a tile. Each tile shows that game's best stat (best
   score, best time, win count, or current chips).
+- **Filter by category:** the chips above the grid (All / Arcade / Puzzle /
+  Skill / Cards) narrow the tiles to one kind of game.
+- **How to play:** every game page has a full "How to play" section at the
+  bottom of the page, below the play area, with its controls, goal, and scoring.
 - **Theme:** the **Theme** menu at the top right switches between *Neon Retro*
   (default), *Clean Dark*, and *Bright & Playful*. Your choice is remembered.
   (Chess keeps its own built-in look.)
@@ -124,6 +131,20 @@ the phone while it is on the same Wi-Fi.
   occasional fruit; the side tunnel wraps you across the screen. Clearing the
   maze refills it and speeds the next one up. Start with 3 lives, gain one every
   10,000 points (up to 5). **Pause** with the button or Space.
+- **Breakout:** drag to move the paddle, tap or Space to launch; clear the
+  bricks to advance to faster levels, 3 lives.
+- **Asteroids:** on-screen rotate / thrust / fire buttons (or arrows + Space);
+  shoot rocks to split them, the screen wraps, bonus life every 10,000 points.
+- **15-Puzzle:** tap a tile next to the gap (or use arrow keys) to slide the
+  numbers into 1–15 order; fewest moves and fastest time are saved.
+- **Reversi:** place a disc to outflank and flip the AI's pieces; pick
+  Easy / Medium / Hard; the most discs at the end wins. You play dark, first.
+- **Simon:** watch the panels flash, then repeat the growing sequence
+  (visual-only, no sound); your best level is saved.
+- **Whack-a-Mole:** tap moles as they pop up during a 30-second round; they pop
+  faster as the clock runs down.
+- **Roulette:** pick a chip value, stack chips on bets, then Spin; running out
+  of chips gives you a Rebuy. Starts at 1,000 chips.
 - **Star Divers / Twin Talon (shooters):** hold and drag anywhere in the **lower
   screen** to slide your ship; it **fires automatically** (Arrows or A/D on a
   keyboard). Enemies hold a formation, then peel off and dive at you. Endless,
@@ -160,9 +181,9 @@ squinks-arcade/
   js/
     storage.js            defensive localStorage helpers (squinks.* keys)
     theme.js              theme load/apply/switch
-    games.js              the game roster (drives the hub tiles)
+    games.js              the game roster + categories (drives tiles + filter)
     cards.js              shared deck/shuffle/card rendering (card games)
-    hub.js                hub rendering + SW registration
+    hub.js                hub rendering + category filter + SW registration
     arcade-engine.js      shared theme/canvas/lives helpers (the 3 new games)
     shooter.js            shared formation-shooter engine (Star Divers, Twin Talon)
   icons/                  PWA PNG icons (192, 512, apple-touch 180)
@@ -170,23 +191,28 @@ squinks-arcade/
   games/
     snake/ 2048/ tetris/ minesweeper/ connect4/ doodle/ blackjack/
       videopoker/         each: index.html + game.js + game.css
-    muncher/ stardivers/ twintalon/   the three new games (same shape)
+    muncher/ stardivers/ twintalon/   the Retro Wave games (same shape)
+    breakout/ asteroids/ puzzle15/ reversi/ simon/ whack/ roulette/
+                          the big-push games (same shape; each ends with a
+                          bottom-of-page "How to play" section)
     chess/                copied Stockfish app (its own style.css/theme)
+  docs/                   design notes (e.g. the big-push design doc)
 ```
 
 ### How offline works
 
 - The service worker (`sw.js`) precaches the **app shell** (hub, shared CSS/JS,
-  icons, manifest) **and every game's lightweight shell** (its HTML/CSS/JS) on
-  install. So after one load of the arcade, all twelve game shells open offline.
-- It does **not** precache chess's heavy engine (~39 MB neural net + wasm).
-  Those are cached at runtime the first time you open Chess. Open Chess once
+  icons, manifest) **and all nineteen game shells** (their HTML/CSS/JS) on
+  install. After one load of the arcade, every game opens offline.
+- It does **not** precache chess's heavy engine (~39 MB neural net + wasm);
+  those are cached at runtime the first time you open Chess. Open Chess once
   while online/local and it becomes fully offline-capable too.
 - The precache is **tolerant**: if one file fails it does not break the rest.
-- The cache name carries a version (currently `squinks-v2`). To ship an update,
-  bump that string in `sw.js`; the worker then clears old caches and takes over
-  immediately (`skipWaiting` + `clients.claim`). This is how a returning visitor
-  who already had an older cache receives newly added games on the next load.
+- The cache name carries a version (currently `squinks-v3`). To ship an update,
+  bump that string in `sw.js` (and add any new game shells to `PRECACHE`); the
+  worker then clears old caches and takes over immediately (`skipWaiting` +
+  `clients.claim`). This is how a returning visitor who already had an older
+  cache receives newly added games on the next load.
 
 ### Data & storage
 
@@ -210,6 +236,16 @@ default instead of breaking a game.
   1. Bet 1–5 credits.
 - **Connect 4 AI:** Easy = minimax depth 2 with a 25% chance of a random legal
   move; Medium = depth 4; Hard = depth 6 (alpha-beta pruned).
+- **Reversi AI:** Easy = 1-ply (with a ~35% chance of a random legal move);
+  Medium = 3-ply; Hard = 4-ply, alpha-beta pruned over a positional weight map
+  (corners prized, the squares beside them penalised) plus a mobility term. You
+  play dark and move first; a side with no legal move passes automatically, and
+  the game ends when neither can move.
+- **Roulette:** European single-zero wheel (0–36). Even-money bets (Red/Black,
+  Even/Odd, 1–18/19–36) pay 1:1, the dozens pay 2:1, and a straight single
+  number pays 35:1; the green 0 is the house edge. Bets are staked from a
+  1,000-chip bankroll (peak balance tracked); chips leave the bankroll only on
+  the spin.
 - **Muncher:** one fixed, hand-designed maze. Four pursuers each chase
   differently — a direct chaser (targets your cell), an ambusher (targets a few
   cells ahead of you), a wanderer (random turns), and a patroller (cycles the

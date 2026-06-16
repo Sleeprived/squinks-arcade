@@ -1,0 +1,36 @@
+.result-area { text-align: center; }
+.result-badge {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #fff;
+  background: #444;
+  border: 3px solid var(--border);
+}
+.result-badge.green { background: #1d8a4c; }
+.result-badge.red { background: #c5283d; }
+.result-badge.black { background: #222; }
+
+.denoms { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+.denom.active { background: var(--accent); color: #fff; border-color: transparent; }
+
+.bet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 340px;
+  max-width: 100%;
+}
+.spot { position: relative; padding: 0.7rem 0.4rem; display: flex; flex-direction: column; gap: 0.15rem; align-items: center; }
+.spot small { font-size: 0.65rem; opacity: 0.75; }
+.spot.red { background: #c5283d; color: #fff; border-color: transparent; }
+.spot.black { background: #222; color: #fff; border-color: transparent; }
+.spot.staked { outline: 3px solid var(--accent); outline-offset: 1px; }
+
+.straight { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.straight #num { min-width: 1.6em; text-align: center; font-size: 1.1rem; }

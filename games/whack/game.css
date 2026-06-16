@@ -1,0 +1,29 @@
+#field {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  width: 340px;
+  max-width: 100%;
+}
+.hole {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(circle at 50% 120%, var(--bg2), var(--panel));
+  border: 1px solid var(--border);
+  border-radius: 50% / 28%;
+  overflow: hidden;
+  cursor: pointer;
+}
+.mole {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 6%;
+  height: 64%;
+  border-radius: 50% 50% 42% 42%;
+  background: radial-gradient(circle at 50% 35%, var(--accent), var(--accent2));
+  transform: translateY(120%);
+  transition: transform 0.1s ease-out;
+  pointer-events: none;
+}
+.hole.up .mole { transform: translateY(0); }
