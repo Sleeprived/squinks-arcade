@@ -1,5 +1,11 @@
 # Squinks Arcade
 
+## ▶ Play it live — just open this link
+
+**https://sleeprived.github.io/squinks-arcade/**
+
+Works on any phone, tablet, or computer. Nothing to install, no account, no server.
+
 An installable, offline arcade hub of nineteen browser games — vanilla HTML/CSS/JS,
 no build step, no backend, no network calls. Open the hub, pick a game, play.
 Scores and chip bankrolls are saved per-device in your browser.
