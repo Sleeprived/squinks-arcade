@@ -37,6 +37,15 @@
       <button class="btn" id="fire" aria-label="Fire">&#9679; Fire</button>
       <button class="btn" id="rotR" aria-label="Rotate right">&#8635;</button>
     </div>
+    <div class="controls">
+      <label>Thrust
+        <select class="btn" id="thrustSet">
+          <option value="0">Low</option>
+          <option value="1">Normal</option>
+          <option value="2">High</option>
+        </select>
+      </label>
+    </div>
     <p class="hint">Rotate + thrust to fly, fire to break the rocks · keyboard: ←/→ turn, ↑ thrust, Space fire.</p>
   </div>
   <div class="overlay hidden" id="over">
@@ -51,6 +60,7 @@
     <ul>
       <li><b>Goal:</b> blast every asteroid. Clearing the field starts the next, busier wave. Survive as long as you can.</li>
       <li><b>Fly:</b> the <b>↺</b> and <b>↻</b> buttons turn your ship; <b>Thrust</b> accelerates in the direction you face. There's no brake — momentum carries you, so thrust in short taps.</li>
+      <li><b>Thrust setting:</b> the <b>Thrust</b> dropdown sets how punchy your engine is — <b>Low</b>, <b>Normal</b>, or <b>High</b> (each raises both acceleration and top speed). Your choice is saved on this device.</li>
       <li><b>Shoot:</b> tap <b>Fire</b> (or hold to fire repeatedly). On a keyboard use <b>←/→</b> to turn, <b>↑</b> to thrust, <b>Space</b> to fire.</li>
       <li><b>Splitting:</b> big rocks break into two medium rocks, mediums into two smalls, smalls into nothing. Smaller rocks move faster but are worth more.</li>
       <li><b>Wrap-around:</b> fly off one edge and you reappear on the opposite side — so do the asteroids and your bullets.</li>

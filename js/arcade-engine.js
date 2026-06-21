@@ -1,6 +1,6 @@
-/* Shared helpers for the Retro Wave games (Muncher, Star Divers, Twin Talon):
+/* Shared helpers for the Retro Wave games (Muncher, Star Divers):
    theme-var reads, responsive canvas sizing, and the common lives / bonus-life
-   model. Lifted out of the per-game files because three games share it; the
+   model. Lifted out of the per-game files because these games share it; the
    original arcade games keep their own inline copies untouched.
 
    Lives model (locked): start with 3 lives, gain 1 bonus life every 10,000

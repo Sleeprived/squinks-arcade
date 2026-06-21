@@ -8,7 +8,7 @@ after the first load, and scores and chip bankrolls save per-device.
 
 ## Games
 Chess (vs Stockfish), Snake, 2048, Tetris, Minesweeper, Connect 4 (vs AI), Doodle
-Jump, Blackjack, Video Poker, Muncher, Star Divers, Twin Talon, Breakout,
+Jump, Blackjack, Video Poker, Muncher, Star Divers, Squink Flyer, Breakout,
 Asteroids, 15-Puzzle, Reversi (vs AI), Simon, Whack-a-Mole, and Roulette —
 grouped by category (Arcade / Puzzle / Skill / Cards) with a filter bar.
 

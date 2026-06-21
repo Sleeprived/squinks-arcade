@@ -1,0 +1,2 @@
+/* Squink Flyer tweaks; layout comes from base.css. */
+#board { width: min(94vw, 380px); }

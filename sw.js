@@ -24,7 +24,7 @@
  * GitHub Pages project URL, not just localhost root).
  */
 
-const CACHE = "squinks-v4";
+const CACHE = "squinks-v6";
 
 const PRECACHE = [
   ".",
@@ -75,15 +75,15 @@ const PRECACHE = [
   "games/stardivers/index.html",
   "games/stardivers/game.js",
   "games/stardivers/game.css",
-  "games/twintalon/index.html",
-  "games/twintalon/game.js",
-  "games/twintalon/game.css",
   "games/breakout/index.html",
   "games/breakout/game.js",
   "games/breakout/game.css",
   "games/asteroids/index.html",
   "games/asteroids/game.js",
   "games/asteroids/game.css",
+  "games/flyer/index.html",
+  "games/flyer/game.js",
+  "games/flyer/game.css",
   "games/puzzle15/index.html",
   "games/puzzle15/game.js",
   "games/puzzle15/game.css",

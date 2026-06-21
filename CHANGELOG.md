@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-06-20 — new game (Squink Flyer), Breakout & Asteroids upgrades, Twin Talon removed
+### Added
+- **Squink Flyer** (`games/flyer/`, badge **FL**, Arcade) — a tap-to-fly gap
+  runner. Flap with a tap, **Space**, **↑**, or **W**; thread the pipe gaps for
+  points. The scroll speed climbs and the gaps narrow as the score rises, so it
+  ramps from calm to frantic. Endless; best score saved per-device.
+- The arcade now holds **nineteen** games.
+### Changed
+- **Breakout — smooth keyboard paddle.** Held-key movement (continuous velocity)
+  replaces the old fixed per-keypress jump, so ←/→ and A/D now glide instead of
+  feeling boxy.
+- **Breakout — escalating speed.** A ball now speeds up with every brick it
+  breaks, and each new level starts from a higher base speed (cap raised
+  4.2–7.6 → 4.2–11). Calmer early, faster the deeper you go.
+- **Breakout — multiball.** You gain an extra ball at levels 2, 4, 8, and 16
+  (up to 5 in play; level 16 = 5 balls). Extra balls fan out and launch
+  together, and a life is only lost when your **last** ball falls.
+- **Asteroids — thrust setting.** A new **Thrust** dropdown (Low / Normal /
+  High) sets engine acceleration and top speed; the choice is saved per-device.
+- **Service worker** cache `squinks-v4` → `squinks-v6` to refresh the precache
+  list (new game added, Twin Talon removed).
+### Removed
+- **Twin Talon.** It was the shared shooter engine with `capture:true`; with
+  Star Divers covering the formation shooter, the two were a single config flag
+  apart, so the capture variant was dropped.
+
 ## 2026-06-16 — gameplay timer fixes (Muncher, Star Divers, Twin Talon)
 ### Fixed
 - **Muncher power-pellet, fruit, and "Ready!" timers were ~16× too short.** A

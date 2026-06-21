@@ -29,9 +29,9 @@ export const GAMES = [
   { id: "chess", name: "Chess", abbr: "CH", category: "Puzzle", label: "", read: () => "vs Stockfish" },
   { id: "muncher", name: "Muncher", abbr: "MU", category: "Arcade", label: "Best", read: (g) => g("squinks.muncher.best") ?? 0 },
   { id: "stardivers", name: "Star Divers", abbr: "SD", category: "Arcade", label: "Best", read: (g) => g("squinks.stardivers.best") ?? 0 },
-  { id: "twintalon", name: "Twin Talon", abbr: "TW", category: "Arcade", label: "Best", read: (g) => g("squinks.twintalon.best") ?? 0 },
   { id: "breakout", name: "Breakout", abbr: "BK", category: "Arcade", label: "Best", read: (g) => g("squinks.breakout.best") ?? 0 },
   { id: "asteroids", name: "Asteroids", abbr: "AS", category: "Arcade", label: "Best", read: (g) => g("squinks.asteroids.best") ?? 0 },
+  { id: "flyer", name: "Squink Flyer", abbr: "FL", category: "Arcade", label: "Best", read: (g) => g("squinks.flyer.best") ?? 0 },
   {
     id: "puzzle15",
     name: "15-Puzzle",

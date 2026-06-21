@@ -2,13 +2,21 @@ import { getNumber, setNumber, remove } from "../../js/storage.js";
 import { cssVar, makeLives, awardBonus, renderLives } from "../../js/arcade-engine.js";
 
 const KEY = "squinks.asteroids.best";
+const THRUST_KEY = "squinks.asteroids.thrust";
 
 const SIZE = 400;
 const SHIP_R = 11;
 const ROT = 0.075;
-const ACCEL = 0.16;
 const FRICTION = 0.99;
-const MAX_V = 6;
+// Thrust setting: each level sets how hard the engine pushes (accel) and the
+// top speed it allows (maxV). Index persists as a preference; default Normal.
+const THRUST_LEVELS = [
+  { name: "Low", accel: 0.1, maxV: 4.5 },
+  { name: "Normal", accel: 0.16, maxV: 6 },
+  { name: "High", accel: 0.24, maxV: 8 },
+];
+const clampThrust = (v) => (Number.isInteger(v) && v >= 0 && v < THRUST_LEVELS.length ? v : 1);
+let thrustIdx = clampThrust(getNumber(THRUST_KEY, 1));
 const BULLET_SPEED = 6.5;
 const BULLET_LIFE = 55;
 const FIRE_CD = 11;
@@ -168,13 +176,14 @@ function update(dt) {
   if (input.left) ship.angle -= ROT * dt;
   if (input.right) ship.angle += ROT * dt;
   if (input.thrust) {
+    const t = THRUST_LEVELS[thrustIdx];
     const h = heading();
-    ship.vx += h.x * ACCEL * dt;
-    ship.vy += h.y * ACCEL * dt;
+    ship.vx += h.x * t.accel * dt;
+    ship.vy += h.y * t.accel * dt;
     const sp = Math.hypot(ship.vx, ship.vy);
-    if (sp > MAX_V) {
-      ship.vx = (ship.vx / sp) * MAX_V;
-      ship.vy = (ship.vy / sp) * MAX_V;
+    if (sp > t.maxV) {
+      ship.vx = (ship.vx / sp) * t.maxV;
+      ship.vy = (ship.vy / sp) * t.maxV;
     }
   }
   ship.vx *= Math.pow(FRICTION, dt);
@@ -330,6 +339,13 @@ window.addEventListener("keyup", (e) => {
   if (e.key === " ") { input.firing = false; return; }
   const k = KEYMAP[e.key];
   if (k) input[k] = false;
+});
+
+const thrustSet = document.getElementById("thrustSet");
+thrustSet.value = String(thrustIdx);
+thrustSet.addEventListener("change", () => {
+  thrustIdx = clampThrust(Number(thrustSet.value));
+  setNumber(THRUST_KEY, thrustIdx);
 });
 
 function togglePause() {
